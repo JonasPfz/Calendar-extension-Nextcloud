@@ -2,6 +2,15 @@
 
 ## [Unveröffentlicht]
 
+## [0.2.1] - 2026-10-27
+
+Gleicher Funktionsumfang wie 0.2.0; das Paket wird jetzt mit Node 24 gebaut.
+
+### Hinweise zum Update
+- Kein Update nötig: Die App verhält sich wie 0.2.0, die gebauten Dateien (`js/`, `css/`) unterscheiden sich nur in
+  der eingebauten Versionsnummer. Wer aktualisiert, entpackt das Paket wie gewohnt nach `custom_apps`; Nextcloud
+  übernimmt die neue Version beim nächsten Aufruf (sonst `occ upgrade`).
+
 ### Geändert
 - Gebaut wird mit Node 24 (LTS bis 30.04.2028) statt Node 22 (Ende 30.04.2027): CI und Release-Workflow, `engines` in
   `package.json`. Node 26 noch nicht, weil die `@nextcloud/*`-Bibliotheken (u. a. `@nextcloud/vue`,
