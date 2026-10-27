@@ -10,7 +10,10 @@
 
 ### Geändert
 - Umstellung auf Nextcloud 34: `appinfo/info.xml` verlangt Nextcloud 34, die Test-Nextcloud (`tools/test-nextcloud.sh`,
-  CI) läuft mit 34.0.5 und Kalender-App 6.6.3. Unit- und Browser-Tests laufen dort ohne Änderung am Code.
+  CI) läuft mit 34.0.5 und Kalender-App 6.6.3.
+- Die gemerkte Kalenderauswahl je Konto wird über `IUserConfig` gelesen und gespeichert statt über die seit Nextcloud 33
+  veralteten `IConfig::getUserValue`/`setUserValue`. Bereits gespeicherte Auswahlen bleiben gültig. Neuer Browser-Test
+  „Kalenderauswahl wird je Konto gespeichert“.
 - Dependabot schlägt wöchentlich Updates für npm-Pakete, Composer (Testwerkzeuge) und GitHub Actions vor
   (`.github/dependabot.yml`). Ohne Hauptversions-Sprünge bei TypeScript (bleibt 5.x), `@nextcloud/vue` (folgt der
   Nextcloud-Version) und `sabre/vobject` (bringt Nextcloud mit). Patch- und Minor-Updates kommen je Bereich gebündelt
