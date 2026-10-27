@@ -15,7 +15,23 @@
   GitHub-Advisory-Datenbank (dependency-review) und fasst alle Jobs im Job `gate` zusammen, der sich als einziger
   Pflicht-Check für einen Branch-Schutz eignet.
 
+- Rate-Limits je Konto auf `termine` und `termin` (120 pro Minute) und `speichern` (30 pro Minute) über
+  `#[UserRateLimit]`; Nextcloud antwortet darüber mit 429. Die Oberfläche bleibt weit darunter.
+- Einzeilige Felder (Titel, Zuständig, Kontaktdaten, Zielgruppe, Teilnehmende) verwandeln Zeilenumbrüche und Tabs in
+  Leerzeichen; sonstige Steuerzeichen werden in allen Feldern entfernt. Vorher konnte ein Titel mit Umbruch in der
+  Kalender-App landen.
+- `composer.json` verlangt PHP 8.2 (Minimum von Nextcloud 34, vorher stand 8.1); die Entwicklungsabhängigkeiten
+  lösen gegen PHP 8.3 auf.
+- Der Release-Workflow attestiert das Paket (Build-Provenance über Sigstore) und schreibt die SHA-256-Summe in die
+  Release-Notes. Prüfen mit `gh attestation verify msp_planung-<version>.tar.gz --repo RalfPfitzner/Calendar-extension-Nextcloud`.
+- Die CI prüft die Laufzeit-Abhängigkeiten des Bundles mit `npm audit` (ab Schwere „high“) bei jedem Lauf.
+
 ### Hinzugefügt
+- `tools/api-check.sh` und `phpstan.neon`: PHPStan (Level 6) gegen `nextcloud/ocp` in genau der geprüften Version plus
+  `CalDavBackend` und `CalendarImpl` aus dem Server-Repo. Die CI fährt das für 34.0.5 und 35.0.2; ein Wechsel der
+  Nextcloud-Schnittstellen fällt damit in der CI auf, nicht erst auf der Instanz.
+- `docs/REPO-EINSTELLUNGEN.md`: Checkliste für die GitHub-Einstellungen des Repos (Beschreibung, private
+  Sicherheitsmeldung, Schutzregeln, Merge-Methoden), mit fertigen Befehlen.
 - `SECURITY.md`: wie Sicherheitslücken gemeldet werden, was als Lücke zählt und was dokumentierte Entscheidung ist.
 - `.gitattributes`: Zeilenenden LF, auch auf Windows-Checkouts.
 - Vorlage für Pull Requests mit Sicherheits- und Prüf-Checkliste, Issue-Hinweis auf die private Meldung.

@@ -30,6 +30,36 @@ jobs:
       - name: Unit-Tests
         run: composer test:unit
 
+  # Passt die App zu den Schnittstellen jeder unterstützten Nextcloud-Version? (PHPStan gegen nextcloud/ocp
+  # in genau dieser Version plus die genutzten Klassen aus apps/dav)
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        nextcloud: ['34.0.5', '35.0.2']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - run: composer install --no-interaction --no-progress
+      - name: API-Check
+        run: tools/api-check.sh "${{ matrix.nextcloud }}"
+
+  # Laufzeit-Abhängigkeiten des Bundles gegen bekannte Schwachstellen, bei jedem Lauf statt nur wöchentlich
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: npm audit --package-lock-only --omit=dev --audit-level=high
+
   # Die Workflow-Dateien selbst prüfen: Syntax, Ausdrücke, Shell in run-Schritten
   actionlint:
     runs-on: ubuntu-latest
@@ -98,7 +128,7 @@ jobs:
   # sonst läuft der Job bei einem Fehlschlag gar nicht und der Check bleibt ewig „ausstehend“.
   gate:
     runs-on: ubuntu-latest
-    needs: [php, actionlint, nextcloud]
+    needs: [php, api, npm-audit, actionlint, nextcloud]
     if: always()
     steps:
       - name: Scheitern, wenn ein Job nicht erfolgreich war
@@ -107,5 +137,5 @@ jobs:
           contains(needs.*.result, 'cancelled') ||
           contains(needs.*.result, 'skipped')
         run: |
-          echo "php=${{ needs.php.result }} actionlint=${{ needs.actionlint.result }} nextcloud=${{ needs.nextcloud.result }}"
+          echo "php=${{ needs.php.result }} api=${{ needs.api.result }} npm-audit=${{ needs.npm-audit.result }} actionlint=${{ needs.actionlint.result }} nextcloud=${{ needs.nextcloud.result }}"
           exit 1

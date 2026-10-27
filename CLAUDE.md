@@ -8,7 +8,9 @@ Nextcloud-App für den Makerspace Mayen-Koblenz: Die Planungsdaten der Word-Vorl
 - **Die Kalender-App wird nicht verändert und nicht geforkt.** Die App liest und schreibt Termine selbst; Planung steht als `X-MSP-…`-Eigenschaften im VEVENT, Titel in `SUMMARY`, Ort in `LOCATION`.
 - `lib/Service/Planung.php`: reine Umwandlung iCalendar ↔ Formular (ohne Nextcloud, mit PHPUnit getestet). Die Namen in `Planung::FELDER` sind Datenformat: **nie umbenennen**, nur ergänzen. `src/felder.js` muss dazu passen.
 - `lib/Service/KalenderService.php`: Rechte und Kalenderliste über OCP (`IManager`, `ICalendarIsWritable`, `ICalendarIsShared`), Lesen/Schreiben der Objekte über `OCA\DAV\CalDAV\CalDavBackend` (OCP kann bestehende Termine nicht ändern). Private Termine in geteilten Kalendern bleiben für andere unsichtbar. Speichern nur mit passendem ETag (409 bei Konflikt).
-- Controller prüfen nur Eingaben und reichen weiter; Fehler für Nutzer als `PlanungException` (Code = HTTP-Status), Antwort `{fehler: "…"}`.
+- Controller prüfen nur Eingaben und reichen weiter; Fehler für Nutzer als `PlanungException` (Code = HTTP-Status), Antwort `{fehler: "…"}`. `termine`, `termin` und `speichern` tragen `#[UserRateLimit]` (120/120/30 je Minute und Konto, Nextcloud antwortet 429).
+- `Planung::EINZEILIG` nennt die einzeiligen Felder und muss zu `mehrzeilig` in `src/felder.js` passen: dort werden Umbrüche zu Leerzeichen, Steuerzeichen fliegen überall raus.
+- `tools/api-check.sh <version>` prüft mit PHPStan (`phpstan.neon`, Level 6) gegen `nextcloud/ocp` in genau dieser Version plus `CalDavBackend`/`CalendarImpl` aus dem Server-Repo. Die CI fährt das für jede unterstützte Hauptversion; eine neue Hauptversion kommt zuerst dort in die Matrix.
 - Oberfläche: Vue 3 mit `@nextcloud/vue` 9, gebaut mit Vite (`@nextcloud/vite-config`) nach `js/` und `css/` (nicht im Repo). TypeScript bleibt auf 5.x (7.x bricht `vite-plugin-dts`).
 - Zustand der Oberfläche (Kalender, Termin, Zeitraum, Suche, Seite, Seitengröße) steht in der Adresse.
 
@@ -18,7 +20,7 @@ Wie im Bestellportal und in der Goethe-Verwaltung: Listen seitenweise, scrollen 
 
 ## Testen
 
-- `composer install && composer test:unit` – Feldzuordnung, Escaping, Serien, Link.
+- `composer install && composer test:unit` – Feldzuordnung, Escaping, Steuerzeichen, Serien, Link. Braucht PHP 8.3 (Paket `nextcloud/ocp` 35); `config.platform.php` in `composer.json` steht auf 8.3, die App selbst läuft ab PHP 8.2 (Minimum von Nextcloud 34).
 - `npm ci && npm run build && tools/test-nextcloud.sh && npm run test:ui` – echte Nextcloud 35.0.2 in Docker mit Kalender-App 6.6.4 (`NC_VERSION=34.0.5 KALENDER_VERSION=6.6.3` für die andere Hauptversion; die CI testet beide), Testdaten aus `tools/testdaten.sh` (nur erfundene Daten), Browser-Tests mit Playwright. In der Cloud-Umgebung: `CHROMIUM=/opt/pw-browsers/chromium`, Docker-Daemon ggf. mit `sudo dockerd &` starten.
 - Vor dem Abgeben beides laufen lassen; neue Funktionen bekommen Tests. Was nur auf Ralfs Instanz prüfbar ist, im PR ausdrücklich als „von Ralf zu testen“ aufführen.
 

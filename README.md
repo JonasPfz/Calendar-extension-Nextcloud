@@ -16,7 +16,13 @@ Anforderungen aus dem Planungs-Chat: [`docs/info.md`](docs/info.md). Umsetzung, 
 
 Voraussetzung: Admin-Rechte in der Nextcloud und ein beschreibbares `custom_apps`-Verzeichnis (beim offiziellen Docker-Image Standard).
 
-1. `msp_planung-<version>.tar.gz` aus dem GitHub-Release laden (oder selbst bauen, siehe unten).
+1. `msp_planung-<version>.tar.gz` aus dem GitHub-Release laden (oder selbst bauen, siehe unten). Die SHA-256-Summe steht in den Release-Notes; ab dem nächsten Release belegt zusätzlich eine Build-Provenance, dass das Paket aus dem Release-Workflow stammt:
+
+   ```bash
+   sha256sum msp_planung-<version>.tar.gz
+   gh attestation verify msp_planung-<version>.tar.gz --repo RalfPfitzner/Calendar-extension-Nextcloud
+   ```
+
 2. Auf dem Server nach `custom_apps` entpacken, Eigentümer auf den Webserver-Nutzer setzen und aktivieren. Beim offiziellen Docker-Image:
 
    ```bash
@@ -46,7 +52,8 @@ tools/          Test-Nextcloud in Docker, Testdaten, Paketbau
 ```
 
 ```bash
-composer install && composer test:unit          # PHP-Tests
+composer install && composer test:unit          # PHP-Tests (braucht PHP 8.3 für das Paket nextcloud/ocp)
+tools/api-check.sh 35.0.2                        # PHPStan gegen die Nextcloud-Schnittstellen dieser Version
 npm ci && npm run build                          # Oberfläche bauen
 tools/test-nextcloud.sh                          # Nextcloud 35.0.2 + Kalender-App in Docker, Port 8080
 NC_VERSION=34.0.5 KALENDER_VERSION=6.6.3 tools/test-nextcloud.sh   # die andere unterstützte Hauptversion

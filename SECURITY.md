@@ -40,7 +40,7 @@ Dokumentierte Entscheidungen sind keine Befunde. Sie hier zu nennen, spart beide
 
 - Kontaktdaten im Termin sieht jeder mit Zugriff auf den Kalender und jedes Gerät, das ihn synchronisiert. Das ist das Datenmodell (`docs/KONZEPT.md`, Abschnitt 4). Den Kalender nicht öffentlich teilen.
 - Ein Konto mit Schreibrecht kann Terminserien anlegen, deren Auflösung Rechenzeit kostet. Das geht in der Kalender-App genauso.
-- Kein Rate-Limit auf den angemeldeten Routen.
+- Die Rate-Limits (120 Lese- und 30 Speicheraufrufe pro Minute und Konto) sind Lastschutz, kein Sicherheitsmerkmal. Dass mehrere Konten zusammen mehr schaffen, ist kein Befund.
 - Speichern verschickt keine Einladungs-Updates an Teilnehmende; die App schreibt am CalDAV-Scheduling vorbei.
 - Fehler in Nextcloud oder der Kalender-App selbst: bitte dort melden.
 - Alles, was ein bereits übernommenes Admin-Konto voraussetzt.
