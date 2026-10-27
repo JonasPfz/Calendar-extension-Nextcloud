@@ -15,7 +15,7 @@
     "extends @nextcloud/browserslist-config"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "dependencies": {
     "@nextcloud/axios": "^2.6.0",

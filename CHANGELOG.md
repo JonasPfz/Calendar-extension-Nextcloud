@@ -2,6 +2,12 @@
 
 ## [Unveröffentlicht]
 
+### Geändert
+- Gebaut wird mit Node 24 (LTS bis 30.04.2028) statt Node 22 (Ende 30.04.2027): CI und Release-Workflow, `engines` in
+  `package.json`. Node 26 noch nicht, weil die `@nextcloud/*`-Bibliotheken (u. a. `@nextcloud/vue`,
+  `@nextcloud/vite-config`) es in `engines` noch nicht nennen. Das gebaute Paket (`js/`, `css/`) ist unter Node 22 und
+  24 gleich.
+
 ## [0.2.0] - 2026-10-27
 
 ### Hinweise zum Update
