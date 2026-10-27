@@ -2,6 +2,24 @@
 
 ## [Unveröffentlicht]
 
+### Hinweise zum Update
+- Läuft jetzt auch auf Nextcloud 35 (`max-version` 35). Auf Nextcloud 34 ändert sich nichts.
+
+### Geändert
+- `appinfo/info.xml` erlaubt Nextcloud 34 bis 35. Gegen Nextcloud 35.0.2 mit Kalender-App 6.6.4 geprüft: die vier
+  genutzten Methoden von `CalDavBackend` sowie `CalendarImpl` und `IUserConfig` sind unverändert; Anmeldung, CSRF,
+  Kalender-Rechte, private Termine, Nur-Lese-Freigaben, iCalendar-Escaping und Eingabegrenzen verhalten sich wie auf 34.
+- Die CI testet in Docker gegen beide Hauptversionen (34.0.5 mit Kalender-App 6.6.3, 35.0.2 mit 6.6.4).
+  `tools/test-nextcloud.sh` nimmt `NC_VERSION` (Vorgabe 35.0.2) und `KALENDER_VERSION` (Vorgabe 6.6.4).
+- Die CI prüft die Workflow-Dateien mit actionlint, neue Abhängigkeiten in Pull Requests gegen die
+  GitHub-Advisory-Datenbank (dependency-review) und fasst alle Jobs im Job `gate` zusammen, der sich als einziger
+  Pflicht-Check für einen Branch-Schutz eignet.
+
+### Hinzugefügt
+- `SECURITY.md`: wie Sicherheitslücken gemeldet werden, was als Lücke zählt und was dokumentierte Entscheidung ist.
+- `.gitattributes`: Zeilenenden LF, auch auf Windows-Checkouts.
+- Vorlage für Pull Requests mit Sicherheits- und Prüf-Checkliste, Issue-Hinweis auf die private Meldung.
+
 ## [0.2.1] - 2026-10-27
 
 Gleicher Funktionsumfang wie 0.2.0; das Paket wird jetzt mit Node 24 gebaut.

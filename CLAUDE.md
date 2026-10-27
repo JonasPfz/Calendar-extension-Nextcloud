@@ -4,7 +4,7 @@ Nextcloud-App für den Makerspace Mayen-Koblenz: Die Planungsdaten der Word-Vorl
 
 ## Architektur
 
-- App-ID `msp_planung`, Namespace `OCA\MspPlanung`, nur Nextcloud 34 (`appinfo/info.xml`: `min-version`/`max-version` 34; Ralfs Instanz: 34.0.5.1 mit Kalender-App 6.6.3, Stand 26.10.2026 laut `test/docs/SYSTEME.md` im Repo `ralfpfitzner/test`). Zieht die Instanz auf eine neue Hauptversion um, Versionsgrenzen, Test-Nextcloud, CI und Doku zusammen nachziehen. Das Repo ist die App selbst (`appinfo/`, `lib/`, `templates/`, `img/`, `src/`).
+- App-ID `msp_planung`, Namespace `OCA\MspPlanung`, Nextcloud 34 bis 35 (`appinfo/info.xml`: `min-version` 34, `max-version` 35; Ralfs Instanz: 34.0.5.1 mit Kalender-App 6.6.3, Stand 26.10.2026 laut `test/docs/SYSTEME.md` im Repo `ralfpfitzner/test`). Erscheint eine neue Hauptversion, `max-version`, CI-Matrix (`.github/workflows/ci.yml`), Vorgabe in `tools/test-nextcloud.sh` und Doku zusammen nachziehen, vorher gegen die neue Version prüfen (genutzte Methoden von `CalDavBackend`, `CalendarImpl`, `IUserConfig`). Das Repo ist die App selbst (`appinfo/`, `lib/`, `templates/`, `img/`, `src/`).
 - **Die Kalender-App wird nicht verändert und nicht geforkt.** Die App liest und schreibt Termine selbst; Planung steht als `X-MSP-…`-Eigenschaften im VEVENT, Titel in `SUMMARY`, Ort in `LOCATION`.
 - `lib/Service/Planung.php`: reine Umwandlung iCalendar ↔ Formular (ohne Nextcloud, mit PHPUnit getestet). Die Namen in `Planung::FELDER` sind Datenformat: **nie umbenennen**, nur ergänzen. `src/felder.js` muss dazu passen.
 - `lib/Service/KalenderService.php`: Rechte und Kalenderliste über OCP (`IManager`, `ICalendarIsWritable`, `ICalendarIsShared`), Lesen/Schreiben der Objekte über `OCA\DAV\CalDAV\CalDavBackend` (OCP kann bestehende Termine nicht ändern). Private Termine in geteilten Kalendern bleiben für andere unsichtbar. Speichern nur mit passendem ETag (409 bei Konflikt).
@@ -19,7 +19,7 @@ Wie im Bestellportal und in der Goethe-Verwaltung: Listen seitenweise, scrollen 
 ## Testen
 
 - `composer install && composer test:unit` – Feldzuordnung, Escaping, Serien, Link.
-- `npm ci && npm run build && tools/test-nextcloud.sh && npm run test:ui` – echte Nextcloud 34.0.5 in Docker mit Kalender-App 6.6.3 (andere Version: `KALENDER_VERSION=…`), Testdaten aus `tools/testdaten.sh` (nur erfundene Daten), Browser-Tests mit Playwright. In der Cloud-Umgebung: `CHROMIUM=/opt/pw-browsers/chromium`, Docker-Daemon ggf. mit `sudo dockerd &` starten.
+- `npm ci && npm run build && tools/test-nextcloud.sh && npm run test:ui` – echte Nextcloud 35.0.2 in Docker mit Kalender-App 6.6.4 (`NC_VERSION=34.0.5 KALENDER_VERSION=6.6.3` für die andere Hauptversion; die CI testet beide), Testdaten aus `tools/testdaten.sh` (nur erfundene Daten), Browser-Tests mit Playwright. In der Cloud-Umgebung: `CHROMIUM=/opt/pw-browsers/chromium`, Docker-Daemon ggf. mit `sudo dockerd &` starten.
 - Vor dem Abgeben beides laufen lassen; neue Funktionen bekommen Tests. Was nur auf Ralfs Instanz prüfbar ist, im PR ausdrücklich als „von Ralf zu testen“ aufführen.
 
 ## Versionen und Releases

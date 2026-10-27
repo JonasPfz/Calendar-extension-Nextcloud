@@ -10,7 +10,7 @@ Nextcloud-App für den Makerspace Mayen-Koblenz: Veranstaltungen werden vollstä
 
 Anforderungen aus dem Planungs-Chat: [`docs/info.md`](docs/info.md). Umsetzung, Datenformat und offene Punkte: [`docs/KONZEPT.md`](docs/KONZEPT.md).
 
-**Stand: Version 0.2.1, nur für Nextcloud 34.** Getestet in einer Test-Nextcloud 34.0.5 mit Kalender-App 6.6.3 (Version 0.1.0 lief nur auf Nextcloud 32, getestet mit 32.0.5 und Kalender-App 6.0.3 und 6.6.2).
+**Stand: Nextcloud 34 und 35.** Die CI testet jede Änderung in Test-Nextclouds 34.0.5 (Kalender-App 6.6.3) und 35.0.2 (Kalender-App 6.6.4). Release 0.2.1 verlangt noch Nextcloud 34; der nächste Release hebt die Grenze auf 35. (Version 0.1.0 lief nur auf Nextcloud 32, getestet mit 32.0.5 und Kalender-App 6.0.3 und 6.6.2.)
 
 ## Installation
 
@@ -48,13 +48,18 @@ tools/          Test-Nextcloud in Docker, Testdaten, Paketbau
 ```bash
 composer install && composer test:unit          # PHP-Tests
 npm ci && npm run build                          # Oberfläche bauen
-tools/test-nextcloud.sh                          # Nextcloud 34.0.5 + Kalender-App in Docker, Port 8080
+tools/test-nextcloud.sh                          # Nextcloud 35.0.2 + Kalender-App in Docker, Port 8080
+NC_VERSION=34.0.5 KALENDER_VERSION=6.6.3 tools/test-nextcloud.sh   # die andere unterstützte Hauptversion
 npm run test:ui                                  # Browser-Tests
 tools/test-nextcloud.sh --stopp                  # Container entfernen
 tools/paket.sh                                   # build/msp_planung-<version>.tar.gz
 ```
 
 Während der Entwicklung baut `npm run watch` die Oberfläche bei jeder Änderung neu; der Test-Container bindet das Arbeitsverzeichnis direkt ein.
+
+## Sicherheit
+
+Sicherheitslücken bitte nicht als öffentliches Issue, sondern wie in [`SECURITY.md`](SECURITY.md) beschrieben melden. Dort steht auch, was als Lücke zählt und was dokumentierte Entscheidung ist.
 
 ## Lizenz
 
